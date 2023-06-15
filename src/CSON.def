@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <assert.h>
+
+#include <CBoil.h>
+
+#ifndef CSONDEF
+#define CSONDEF
+
+#define clean_errno() (errno == 0 ? "None" : strerror(errno))
+#define log_error(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define assertf(A, M, ...) if(!(A)) {log_error(M, ##__VA_ARGS__); assert(A); }
+
+#define INITIAL_CAPACITY 2  // must not be zero
+#define OFFSET 14695981039346656037UL
+#define PRIME 1099511628211UL
+
+RULES(
+    w,          zeroormore(firstof(" ", "\n", "\t", "\r")),
+    string,     zeroormore(sequence(testnot("\""), ANY)),
+    array,      capture("array", sequence("[", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w))))), "]")),
+    boolean,    capture("bool", firstof("true", "false")),
+    digit,      charrange("0", "9"),
+    number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit)))),
+    value,      capture("value", firstof(subrule(body), subrule(array), sequence("\"", capture("string", subrule(string)), "\""), subrule(boolean), subrule(number), capture("null", "null"))),
+    key,        sequence("\"", capture("key", subrule(string)), "\""),
+    kv,         capture("kv", sequence(subrule(key), subrule(w), ":", subrule(w), subrule(value), subrule(w), ",")),
+    body,       sequence("{", subrule(w), capture("body", zeroormore(sequence(subrule(kv), subrule(w)))), "}"),
+    top,        sequence(subrule(w), subrule(body), subrule(w), END)
+)
+
+#endif
