@@ -25,8 +25,8 @@ RULES(
     number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit)))),
     value,      capture("value", firstof(subrule(body), subrule(array), sequence("\"", capture("string", subrule(string)), "\""), subrule(boolean), subrule(number), capture("null", "null"))),
     key,        sequence("\"", capture("key", subrule(string)), "\""),
-    kv,         capture("kv", sequence(subrule(key), subrule(w), ":", subrule(w), subrule(value), subrule(w), ",")),
-    body,       sequence("{", subrule(w), capture("body", zeroormore(sequence(subrule(kv), subrule(w)))), "}"),
+    kv,         capture("kv", sequence(subrule(key), subrule(w), ":", subrule(w), subrule(value), subrule(w))),
+    body,       sequence("{", subrule(w), capture("body", sequence(optional(sequence(subrule(kv), subrule(w))), zeroormore(sequence(",", subrule(w), subrule(kv), subrule(w))))), "}"),
     top,        sequence(subrule(w), subrule(body), subrule(w), END)
 )
 

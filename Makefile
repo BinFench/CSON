@@ -2,10 +2,11 @@ default: install
 
 deps:
 	@mkdir deps && cd deps && git clone https://github.com/BinFench/CBoil > /dev/null 2>&1 && cd CBoil && make static --no-print-directory > /dev/null 2>&1
+
+install:
+	@cd deps/CBoil && make static --no-print-directory > /dev/null 2>&1
 	@cp deps/CBoil/libCBoil.o src/libCBoil.o
 	@cd deps/CBoil && make --no-print-directory > /dev/null
-
-install: clean deps
 	@cd src && make install --no-print-directory
 
 install-quiet:
