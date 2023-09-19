@@ -69,7 +69,7 @@ static JSONValue* insert(JSONObject* parent, JSONValue child) {
 }
 
 static char* strcopy(char* str) {
-    char* toRet = malloc(strlen(str));
+    char* toRet = malloc(strlen(str)+1);
     strcpy(toRet, str);
     return toRet;
 }

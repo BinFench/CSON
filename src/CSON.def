@@ -19,7 +19,7 @@
 RULES(
     w,          zeroormore(firstof(" ", "\n", "\t", "\r")),
     string,     zeroormore(sequence(testnot("\""), ANY)),
-    array,      capture("array", sequence("[", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w))))), "]")),
+    array,      sequence("[", capture("array", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w)))))), "]"),
     boolean,    capture("boolean", firstof("true", "false")),
     digit,      charrange("0", "9"),
     number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit)))),
