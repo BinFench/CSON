@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <CBoil.h>
 
 #include "CSON.h"
@@ -22,11 +23,17 @@ static JSONValue* get(JSONObject* object, const char* name) {
     uint64_t hash = hash_key(name);
     size_t index = (size_t)(hash & (uint64_t)(object->capacity - 1));
 
-    while (object->kvs[index].key) {
-        if (strcmp(name, object->kvs[index].key) == 0)
-            return object->kvs + index;
+    int iter = 0;
+    while (iter < object->capacity) {
+        if (object->kvs[index].key) {
+            if (strcmp(name, object->kvs[index].key) == 0) {
+                return object->kvs + index;
+            }
+        }
+
         index++;
         if (index >= object->capacity) index = 0;
+        iter++;
     }
     return NULL;
 }
@@ -73,8 +80,8 @@ static bool* boolcopy(bool val) {
     return toRet;
 }
 
-static float* floatcopy(float flt) {
-    float* toRet = malloc(sizeof(float));
+static double* floatcopy(double flt) {
+    double* toRet = malloc(sizeof(double));
     *toRet = flt;
     return toRet;
 }
@@ -103,7 +110,7 @@ static JSONValue getJSONValue(char* key, Capture* value) {
         return ((JSONValue){key, STR, strcopy(string->captures->firstCap->str)});
     } CBOILELSE(CBOILIF(value, boolean) {
         // Attach JSONValue<bool> to AST
-        return ((JSONValue){key, BOOL, boolcopy(strcmp(boolean->captures->firstCap->str, "true"))});
+        return ((JSONValue){key, BOOL, boolcopy(strcmp(boolean->captures->firstCap->str, "true") == 0)});
     } CBOILELSE(CBOILIF(value, number) {
         // Attach JSONValue<int> or JSONValue<float> to AST
         char* numstr = number->captures->firstCap->str;
@@ -144,7 +151,6 @@ static JSONObject* getJSONObject(Capture* cap) {
         Capture* KV = KVs->captures + i;
         char* key = strcopy(CBoil.get(KV, "key")->captures->firstCap->str);
         Capture* value = CBoil.get(KV, "value")->captures;
-
         insert(json, getJSONValue(key, value));
     }
 
