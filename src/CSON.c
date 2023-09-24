@@ -158,7 +158,7 @@ static JSONObject* getJSONObject(Capture* cap) {
 }
 
 static JSONObject* parse(char* src) {
-    Capture* cap = PARSE(top, src);
+    Capture* cap = CBoil.parse(&CSONRULES, "top", src);
     if (!cap) return NULL;
 
     JSONObject* json = getJSONObject(cap);

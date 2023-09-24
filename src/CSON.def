@@ -16,18 +16,18 @@
 #define OFFSET 14695981039346656037UL
 #define PRIME 1099511628211UL
 
-RULES(
-    w,          zeroormore(firstof(" ", "\n", "\t", "\r")),
-    string,     zeroormore(sequence(testnot("\""), ANY)),
-    array,      sequence("[", capture("array", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w)))))), "]"),
-    boolean,    capture("boolean", firstof("true", "false")),
-    digit,      charrange("0", "9"),
-    number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit)))),
-    value,      capture("value", firstof(subrule(body), subrule(array), sequence("\"", capture("string", subrule(string)), "\""), subrule(boolean), subrule(number), capture("null", "null"))),
-    key,        sequence("\"", capture("key", subrule(string)), "\""),
-    kv,         capture("kv", sequence(subrule(key), subrule(w), ":", subrule(w), subrule(value), subrule(w))),
-    body,       sequence("{", subrule(w), capture("body", sequence(optional(sequence(subrule(kv), subrule(w))), zeroormore(sequence(",", subrule(w), subrule(kv), subrule(w))))), "}"),
-    top,        sequence(subrule(w), subrule(body), subrule(w), END)
-)
+RULES(CSONRULES,
+    RULE(w,          zeroormore(firstof(" ", "\n", "\t", "\r"))),
+    RULE(string,     zeroormore(sequence(testnot("\""), ANY))),
+    RULE(array,      sequence("[", capture("array", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w)))))), "]")),
+    RULE(boolean,    capture("boolean", firstof("true", "false"))),
+    RULE(digit,      charrange("0", "9")),
+    RULE(number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit))))),
+    RULE(value,      capture("value", firstof(subrule(body), subrule(array), sequence("\"", capture("string", subrule(string)), "\""), subrule(boolean), subrule(number), capture("null", "null")))),
+    RULE(key,        sequence("\"", capture("key", subrule(string)), "\"")),
+    RULE(kv,         capture("kv", sequence(subrule(key), subrule(w), ":", subrule(w), subrule(value), subrule(w)))),
+    RULE(body,       sequence("{", subrule(w), capture("body", sequence(optional(sequence(subrule(kv), subrule(w))), zeroormore(sequence(",", subrule(w), subrule(kv), subrule(w))))), "}")),
+    RULE(top,        sequence(subrule(w), subrule(body), subrule(w), END))
+);
 
 #endif

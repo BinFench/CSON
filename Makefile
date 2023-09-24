@@ -22,5 +22,4 @@ test-mem: install-quiet
 	@cd test && make test-mem --no-print-directory
 
 clean:
-	@rm -rf deps
 	@cd test && make clean --no-print-directory
