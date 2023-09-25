@@ -19,7 +19,7 @@
 RULES(CSONRULES,
     RULE(w,          zeroormore(firstof(" ", "\n", "\t", "\r"))),
     RULE(string,     zeroormore(sequence(testnot("\""), ANY))),
-    RULE(array,      sequence("[", capture("array", optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w)))))), "]")),
+    RULE(array,      sequence("[", capture("array", sequence(subrule(w), optional(sequence(subrule(value), subrule(w), zeroormore(sequence(",", subrule(w), subrule(value), subrule(w))))))), "]")),
     RULE(boolean,    capture("boolean", firstof("true", "false"))),
     RULE(digit,      charrange("0", "9")),
     RULE(number,     capture("number", sequence(oneormore(subrule(digit)), optional("."), zeroormore(subrule(digit))))),
