@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS= -c -Wall -Werror -fpic
 DEBUG_FLAGS= -g
+RELEASE_FLAGS= -O3
 OBJS=CSON.o libCBoil.o
 SHARED=libCSON.so
 SHARED_FLAGS= -shared -o
@@ -28,4 +29,4 @@ uninstall:
 	@echo "Shared library uninstalled."
 
 %.o: %.c
-	@$(CC) -c -o $@  $< $(CFLAGS) $(DEBUG_FLAGS) $(LIBS)
+	@$(CC) -c -o $@  $< $(CFLAGS) $(RELEASE_FLAGS) $(LIBS)
